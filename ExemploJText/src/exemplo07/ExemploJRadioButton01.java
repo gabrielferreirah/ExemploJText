@@ -1,5 +1,6 @@
 package exemplo07;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
@@ -89,15 +90,36 @@ public class ExemploJRadioButton01 {
         jFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
+    private void estilizarRadioButton() {
+        jRadioButtonCorBranco.setContentAreaFilled(false);
+        jRadioButtonCorFuchsia.setContentAreaFilled(false);
+        jRadioButtonCorPreto.setContentAreaFilled(false);
+        jRadioButtonCorRose.setContentAreaFilled(false);
+    } 
+    
     private void adicionaracao() {
         jButtonLimparSelecao.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                jRadioButtonCorBranco.setSelected(false);
-                jRadioButtonCorFuchsia.setSelected(false);
-                jRadioButtonCorPreto.setSelected(false);
-                jRadioButtonCorRose.setSelected(false);
+                jButtonGroupCor.clearSelection();
+            }
+        });
+        jButtonSalvar.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    if (jRadioButtonCorBranco.isSelected()) {
+                    jFrame.getContentPane().setBackground(Color.WHITE);
+                    definirCorTexto("#000000");
+                } else if (jRadioButtonCorPreto.isSelected()){
+                    jFrame.getContentPane().setBackground(Color.BLACK);
+                }
+            }
+
+ 
+                    private void definirCorTexto(String string) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
     }
