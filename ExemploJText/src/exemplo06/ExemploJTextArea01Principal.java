@@ -10,6 +10,9 @@ public class ExemploJTextArea01Principal {
     
         EventQueue.invokeLater(new Runnable(){
            @Override 
+           public void run(){
+               new ExemploJTextArea01();
+           }
         });
     }
     

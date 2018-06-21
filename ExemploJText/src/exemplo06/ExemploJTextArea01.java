@@ -11,8 +11,8 @@ import javax.swing.JTextArea;
 public class ExemploJTextArea01 {
 
     private JFrame jFrame;
-    private JTextArea jTextarea;
-    private JLabel jLabel;
+    private JTextArea jTextArea;
+    private JLabel jLabelDescricao;
     private JScrollPane jScrollPane;
 
     public ExemploJTextArea01() {
@@ -20,7 +20,8 @@ public class ExemploJTextArea01 {
     }
 
     private void gerarTela() {
-
+        jFrame = new JFrame();
+        
     }
     
     private void gerarDimensoes() {
@@ -29,7 +30,7 @@ public class ExemploJTextArea01 {
 
     private void gerarLocalizacoes() {
         jLabelDescricao.setSize(70, 20);
-        jScrollPane.setSize();
+        jScrollPane.setSize(10,10);
     }
 
     private void adicionarComponentes() {
@@ -37,7 +38,7 @@ public class ExemploJTextArea01 {
     }
 
     private void instanciarComponentes() {
-        JTextArea = new JTextArea();
+        jTextArea = new JTextArea();
         jLabelDescricao = new JLabel("Descrição");
     }
 
