@@ -1,6 +1,9 @@
 package exemplo10;
 
 import exemplo08.JFrameBaseInterface;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,23 +15,27 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
 /**
  * @author Gabriel de Oliveira Ferreira
  */
 public class ExemploHospitalJFrame implements JFrameBaseInterface {
-
+    
+    private int linhaSelecionada = -1; 
     private JFrame jFrame;
     private JTextField jTextFieldNome, jTextFieldRendaAnual, jTextFieldAno;
     private JFormattedTextField jFormattedTextFieldCNPJ;
     private JComboBox jComboBoxCategoria;
     private JCheckBox jCheckBoxPrivado;
-    private JLabel jLabelAno, jLabelNome,jLabelRenda,
+    private JLabel jLabelAno, jLabelNome, jLabelRenda,
             jLabelRendaAnual, jLabelCategoria, jLabelCNPJ;
     private JButton jButtonAdicionar, jButtonEditar, jButtonExcluir;
     private JTable jTable;
     private JScrollPane jScrollPane;
+    private DefaultTableModel dtm;
+    private ArrayList<Hospital> hospitais = new ArrayList<>();
 
     public void ExemploHospitalJFrame() {
         gerarTela();
@@ -36,6 +43,7 @@ public class ExemploHospitalJFrame implements JFrameBaseInterface {
         gerarLocalizacoes();
         gerarDimensoes();
         adicionarComponentes();
+        acaoBotaoAdicionar();
         jFrame.setVisible(true);
     }
 
@@ -70,12 +78,11 @@ public class ExemploHospitalJFrame implements JFrameBaseInterface {
 
     @Override
     public void instanciarComponentes() {
-        
+
         jTable = new JTable();
         configurarJTable();
         jScrollPane = new JScrollPane(jTable);
-        
-        
+
         jLabelAno = new JLabel("Ano");
         jLabelCategoria = new JLabel("Categoria");
         jLabelCNPJ = new JLabel("CNPJ");
@@ -92,75 +99,143 @@ public class ExemploHospitalJFrame implements JFrameBaseInterface {
         jComboBoxCategoria = new JComboBox();
         configurarJComboBox();
         configurarJFormattedTextField();
-        
-        
+
     }
 
     private void configurarJComboBox() {
         DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
         modelo.addElement("Cardiologia");
         modelo.addElement("Oncologia");
+        jComboBoxCategoria.setModel(modelo);
+        jComboBoxCategoria.setSelectedIndex(-1);
     }
-    
+
     private void configurarJFormattedTextField() {
         try {
-            MaskFormatter maskFormatter = new
-            MaskFormatter("##.###.###/####-##");
+            MaskFormatter maskFormatter = new MaskFormatter("##.###.###/####-##");
             maskFormatter.install(jFormattedTextFieldCNPJ);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Chama o programador pq deu ruim");
         }
     }
-    
+
     @Override
     public void gerarLocalizacoes() {
         jLabelNome.setLocation(10, 10);
         jTextFieldNome.setLocation(10, 35);
-        
+
         jLabelAno.setLocation(10, 60);
         jTextFieldAno.setLocation(10, 85);
-        
+
         jLabelCNPJ.setLocation(10, 110);
         jFormattedTextFieldCNPJ.setLocation(10, 135);
-        
+
         jLabelCategoria.setLocation(10, 160);
         jComboBoxCategoria.setLocation(10, 10);
-        
+
         jLabelRendaAnual.setLocation(10, 210);
         jTextFieldRendaAnual.setLocation(10, 235);
-        
+
         jCheckBoxPrivado.setLocation(10, 260);
-        
+
         jButtonAdicionar.setLocation(10, 285);
+        jButtonEditar.setLocation(270, 10);
+        jButtonExcluir.setLocation(370, 10);
+
+        jScrollPane.setLocation(170, 35);
     }
 
     @Override
     public void gerarDimensoes() {
         jLabelNome.setSize(150, 20);
         jTextFieldNome.setSize(150, 20);
-        
+
         jLabelAno.setSize(150, 20);
         jTextFieldAno.setSize(150, 20);
-        
+
         jLabelCNPJ.setSize(150, 20);
         jFormattedTextFieldCNPJ.setSize(150, 20);
-        
+
         jLabelCategoria.setSize(150, 20);
         jComboBoxCategoria.setSize(150, 20);
-        
+
         jLabelRendaAnual.setSize(150, 20);
         jTextFieldRendaAnual.setSize(150, 20);
-        
+
         jCheckBoxPrivado.setSize(150, 20);
-        
+
         jButtonAdicionar.setSize(100, 20);
         jButtonEditar.setSize(100, 20);
         jButtonExcluir.setSize(100, 20);
+
+        jScrollPane.setSize(300, 400);
     }
 
     private void configurarJTable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        dtm = new DefaultTableModel();
+        dtm.addColumn("Nome");
+        dtm.addColumn("CNPJ");
+        dtm.addColumn("Renda Anual");
+        jTable.setModel(dtm);
     }
 
+    private void acaoBotaoAdicionar() {
+        jButtonAdicionar.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Hospital hospital = new Hospital();
+                hospital.setNome(jTextFieldNome.getText());
+                hospital.setCnpj(jFormattedTextFieldCNPJ.getText());
+                hospital.setRendaAnual(Double.parseDouble(
+                        jTextFieldRendaAnual.getText()
+                ));
+                hospital.setAno(Short.parseShort(jTextFieldAno.getText()
+                ));
+                hospital.setCategoria(
+                        jComboBoxCategoria.getSelectedItem().toString());
+                hospitais.add(hospital);
+                dtm.addRow(new Object[]{
+                    hospitais.getNome(),
+                    hospitais.getCnpj(),
+                    hospitais.getRendaAnual()
+                });
+                limparCampos();
+            }
+
+        });
+    }
+
+    private void limparCampos() {
+        jTextFieldAno.setText("");
+        jTextFieldNome.setText("");
+        jTextFieldRendaAnual.setText("");
+    }
+    
+    private void acaoBotaoEditar() {
+        jButtonEditar.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
+    }
+    
+    private void acaoExcluir() {
+        jButtonExcluir.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int escolha = JOptionPane.showConfirmDialog(null,
+                        "Deseja realmente apagar?", "Aviso",
+                        JOptionPane.YES_NO_OPTION);
+                if (escolha == JOptionPane.YES_OPTION) {
+                    linhaSelecionada = JTable.getSelectedRow();
+                    dtm.removeRow(linhaSelecionada);
+                }
+            }
+        });
+    }
 }
